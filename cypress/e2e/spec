@@ -1,0 +1,55 @@
+it("Login", () => {
+  cy.visit("https://sa2.dev4.levitated.dev/");
+  cy.get(".login-input").type("ssclev");
+  cy.get(".login-button").click();
+
+  cy.contains("Enterprise Cyber Risk Management").click();
+  // Click Marketplace integration
+  cy.contains("label.tool-group-label", "Add a Marketplace integration...")
+    .find("input.tool-checkbox")
+    .check()
+    .should("be.checked");
+
+  cy.get(".tool-dynamic > .tool-checkbox").click();
+  // Iterates throug cells and checks values is eq 0
+  for (let i = 6; i <= 17; i++) {
+    cy.get(`:nth-child(14) > :nth-child(${i})`).should("contain.text", "0");
+  }
+
+  cy.get("select.tool-select").select("3");
+
+  // Iterates throug cells and checks values is eq 3.4
+  for (let i = 6; i <= 17; i++) {
+    cy.get(`:nth-child(14) > :nth-child(${i})`).should("contain.text", "3.4");
+  }
+
+  // Check that Total have proper value
+  cy.get(".total__bold").should("contain.text", "Total: 40.3");
+
+  // Activate the group
+  cy.get(".tool-button").click();
+  cy.get(".tool-dynamic > .tool-checkbox").eq(1).click();
+
+  // Get Total value
+  cy.get(".total__bold").then(($element) => {
+    const initialValue = $element.text();
+
+  // Select product 2
+    cy.get("select.tool-select").eq(1).select("2");
+    
+  // Compare value has changed after selecting the option '2' in the dropdown.
+    cy.get(".total__bold").should(($updatedElement) => {
+      const updatedValue = $updatedElement.text();
+
+      expect(updatedValue).not.to.equal(initialValue);
+    });
+  });
+// TEST2
+  // Click Marketplace integration again to deactivate
+  cy.contains("label.tool-group-label", "Add a Marketplace integration...")
+    .find("input.tool-checkbox")
+    .uncheck()
+    .should("not.be.checked");
+
+  cy.get("tfoot td.total.total__bold").should("contain.text", "Total: 0");
+});

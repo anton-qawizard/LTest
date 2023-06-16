@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "cypress": "^12.14.0"
+  },
+  "scripts": {
+    "run:chrome": "npx cypress run --browser chrome",
+    "run:edge": "npx cypress run --browser edge",
+    "run:electron": "npx cypress run --browser electron"
+  }
+}
